@@ -6,7 +6,7 @@
 
 <div class="mb-3">
     <label for="departamentos" class="form-label">Departamentos</label>
-    <InputTagger Id="departamentos" Placeholder="Departamento" @bind-Value="departamentos"></InputTagger>
+    <InputTagger Id="departamentos" Placeholder="Departamento" ValueChanged="OnDepartamentoChange"></InputTagger>
 </div>
 
 <div class="mb-3">
@@ -17,7 +17,17 @@
 <h3>Tags seleccionados</h3>
 <div><strong>Departamentos:</strong> @departamentos</div>
 <div><strong>Ciudades:</strong> @ciudades</div><div></div>
+
+<p>@mensaje</p>
+
 @code {
     private string departamentos;
     private string ciudades;
+    private string mensaje;
+
+    private void OnDepartamentoChange(string value)
+    {
+        departamentos = value;
+        mensaje = $"El componente Departamento se actualizó con un texto de largo {value.Length}";
+    }
 }

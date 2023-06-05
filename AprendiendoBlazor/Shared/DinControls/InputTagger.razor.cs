@@ -23,6 +23,12 @@ namespace AprendiendoBlazor.Shared.DinControls
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
 
+        private async Task OnValueChange(ChangeEventArgs e)
+        {
+            Value = e.Value.ToString();
+            await ValueChanged.InvokeAsync(Value);
+        }
+
         private async Task UpdateValue(string newValue)
         {
             Value = newValue;
