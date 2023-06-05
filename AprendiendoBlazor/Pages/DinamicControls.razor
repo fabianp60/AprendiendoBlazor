@@ -4,8 +4,20 @@
 
 <h2>Controles dinámicos</h2>
 
-<InputTagger Placeholder="Ciudad"></InputTagger>
+<div class="mb-3">
+    <label for="departamentos" class="form-label">Departamentos</label>
+    <InputTagger Id="departamentos" Placeholder="Departamento" @bind-Value="departamentos"></InputTagger>
+</div>
 
+<div class="mb-3">
+    <label for="ciudades" class="form-label">Ciudades</label>
+    <InputTagger Id="ciudades" Placeholder="Ciudad" @bind-Value="ciudades"></InputTagger>
+</div>
+
+<h3>Tags seleccionados</h3>
+<div><strong>Departamentos:</strong> @departamentos</div>
+<div><strong>Ciudades:</strong> @ciudades</div><div></div>
 @code {
-
+    private string departamentos;
+    private string ciudades;
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
+using System.Text.Json;
 
 namespace AprendiendoBlazor.Shared.DinControls
 {
@@ -12,35 +13,46 @@ namespace AprendiendoBlazor.Shared.DinControls
         private List<TagObj> _tags { get; set; } = new List<TagObj>();
         private ElementReference inputElement;
         private ElementReference textWidthElement;
+        
+        [Parameter]
+        public string Id { get; set; }
 
         [Parameter]
-        public string TagsDataString { get; set; } = "";
+        public string Value { get; set; }
 
         [Parameter]
-        public string TagHtmlTemplate { get; set; } = "<span data-value='<%value%>' class='badge bg-primary'><%label%></span>";
+        public EventCallback<string> ValueChanged { get; set; }
+
+        private async Task UpdateValue(string newValue)
+        {
+            Value = newValue;
+            await ValueChanged.InvokeAsync(Value);
+        }
 
         [Parameter]
         public string Placeholder { get; set; } = "";
 
-        public void OnKeyDownDetected(KeyboardEventArgs e)
+        public async Task OnKeyUpDetected(KeyboardEventArgs e)
         {
             if (e.Code == "Enter" || e.Code == "NumpadEnter")
             {
                 _tags.Add(new TagObj { value = TagInputText, label = TagInputText });
+                await UpdateValue(TagsToJson());
                 TagInputText = "";
             }
             else if (e.Code == "Backspace")
             {
                 if (TagInputText.Length == 0 && _tags.Count > 0)
                 {
-                    _tags.RemoveAt(_tags.Count - 1);
+                    RemoveTag(_tags.Count - 1);
                 }
             }
         }
 
-        private string GetTagHtml(TagObj curTag)
+        private async Task RemoveTag(int index)
         {
-            return TagHtmlTemplate.Replace("<%label%>", curTag.label).Replace("<%value%>", curTag.value) + "\r\n";
+            _tags.RemoveAt(index);
+            await UpdateValue(TagsToJson());
         }
 
         private async Task FocusInput()
@@ -48,16 +60,34 @@ namespace AprendiendoBlazor.Shared.DinControls
             await JS.InvokeVoidAsync("BlazorFocusElement", inputElement);
         }
 
-        private async Task UpdateInputWidth(ChangeEventArgs e)
+        private async Task OnInputDetected(ChangeEventArgs e)
         {
-            string inputText = e.Value?.ToString() ?? string.Empty;
+            TagInputText = e.Value?.ToString() ?? string.Empty;
+            await UpdateInputWidth();
+        }
+
+        private async Task UpdateInputWidth()
+        {
             if (FirstMinWidth)
             {
                 MinWidth = await JS.InvokeAsync<double>("BlazorMeasureTextWidth", Placeholder, textWidthElement);
                 FirstMinWidth = false;
             }
-            var width = await JS.InvokeAsync<double>("BlazorMeasureTextWidth", inputText, textWidthElement);
+            var width = await JS.InvokeAsync<double>("BlazorMeasureTextWidth", TagInputText, textWidthElement);
             await JS.InvokeVoidAsync("BlazorSetElementWidth", inputElement, (MinWidth > width ? MinWidth : width) + 10);
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await UpdateInputWidth();
+            }
+        }
+
+        private string TagsToJson()
+        {
+            return JsonSerializer.Serialize(_tags);
         }
     }
 

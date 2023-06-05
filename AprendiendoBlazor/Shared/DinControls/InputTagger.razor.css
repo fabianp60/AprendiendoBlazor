@@ -1,4 +1,4 @@
-﻿div.it-tags-container {
+﻿tags.it-tags-container {
     display: inline;
 }
 
@@ -17,3 +17,38 @@ span.it-noborder.it-hidden {
     visibility: hidden;
     white-space: pre;
 }
+
+tag.it-tag {
+    margin: 0 .25rem .25rem 0;
+    display: inline-flex;
+    height: 2em;
+    align-items: center;
+    transition: opacity 0.3s;
+}
+
+.it-tag:hover {
+    opacity: 0.8;
+}
+
+x.it-tag-remove {
+    transition: .2s ease-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    margin: 0 -0.25rem 0 .25rem;
+    overflow: hidden;
+    cursor: pointer;
+    font-size: 1.25em;
+}
+
+    x.it-tag-remove:hover {
+        background-color: rgba(255, 0, 0, .8);
+    }
+
+    x.it-tag-remove::after {
+        content: "×"; 
+    }

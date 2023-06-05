@@ -1,20 +1,23 @@
 ﻿@inject IJSRuntime JS
 
 <div class="form-control" @onclick="FocusInput">
-    <div class="it-tags-container">
+    <tags class="it-tags-container">
         @if (_tags != null)
         {
-            foreach (TagObj curTag in _tags)
+            @foreach (var curTag in _tags.Select((tag, index) => (tag, index)))
             {
-                @((MarkupString)GetTagHtml(curTag))
+                <tag data-value="@curTag.tag.value" class="it-tag badge bg-primary">
+                    <div class="it-tag-label">@curTag.tag.label</div>
+                    <x class="it-tag-remove" role="button" aria-label="remove tag" @onclick="@(() => RemoveTag(curTag.index))"></x>
+                </tag>
             }
         }
-    </div>
-    <input type="text"
-        @bind="TagInputText"
-        @onkeydown="OnKeyDownDetected"
-        @oninput="UpdateInputWidth"
-        @ref="inputElement"
+    </tags>
+    <input type="text" id="@Id"
+    @bind="TagInputText"
+    @onkeyup="OnKeyUpDetected"
+    @oninput="OnInputDetected"
+    @ref="inputElement"
            placeholder="@Placeholder"
            autocomplete="off"
            class="it-noborder" />
