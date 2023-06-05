@@ -1,0 +1,19 @@
+﻿div.it-tags-container {
+    display: inline;
+}
+
+input.it-noborder {
+    border: none;
+    width: 60px;
+    outline: none;
+    padding: 0;
+}
+
+    input.it-noborder:focus {
+        outline: none;
+    }
+
+span.it-noborder.it-hidden {
+    visibility: hidden;
+    white-space: pre;
+}

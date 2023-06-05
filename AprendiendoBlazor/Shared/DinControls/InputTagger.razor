@@ -1,0 +1,25 @@
+﻿@inject IJSRuntime JS
+
+<div class="form-control" @onclick="FocusInput">
+    <div class="it-tags-container">
+        @if (_tags != null)
+        {
+            foreach (TagObj curTag in _tags)
+            {
+                @((MarkupString)GetTagHtml(curTag))
+            }
+        }
+    </div>
+    <input type="text"
+        @bind="TagInputText"
+        @onkeydown="OnKeyDownDetected"
+        @oninput="UpdateInputWidth"
+        @ref="inputElement"
+           placeholder="@Placeholder"
+           autocomplete="off"
+           class="it-noborder" />
+    <span class="it-noborder it-hidden" @ref="textWidthElement"></span>
+</div>
+
+@code {
+}
