@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using FSoft.BlazorLib.Data;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using System.Text.Json;
 
-namespace AprendiendoBlazor.Shared.DinControls
+namespace FSoft.BlazorLib
 {
     public partial class InputTagger
     {
@@ -13,7 +14,7 @@ namespace AprendiendoBlazor.Shared.DinControls
         private List<TagObj> _tags { get; set; } = new List<TagObj>();
         private ElementReference inputElement;
         private ElementReference textWidthElement;
-        
+
         [Parameter]
         public string Id { get; set; }
 
@@ -95,11 +96,5 @@ namespace AprendiendoBlazor.Shared.DinControls
         {
             return JsonSerializer.Serialize(_tags);
         }
-    }
-
-    public class TagObj
-    {
-        public string value { get; set; } = "";
-        public string label { get; set; } = "";
     }
 }

@@ -1,4 +1,4 @@
-﻿tags.it-tags-container {
+tags.it-tags-container {
     display: inline;
 }
 
@@ -50,5 +50,5 @@ x.it-tag-remove {
     }
 
     x.it-tag-remove::after {
-        content: "×"; 
+        content: "�";
     }
