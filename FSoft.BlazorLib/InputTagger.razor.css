@@ -50,5 +50,5 @@ x.it-tag-remove {
     }
 
     x.it-tag-remove::after {
-        content: "×";
+        content: "\00D7";
     }

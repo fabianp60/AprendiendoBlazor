@@ -1,7 +1,6 @@
 ﻿using FSoft.BlazorLib.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 using System.Text.Json;
 
 namespace FSoft.BlazorLib
@@ -15,6 +14,9 @@ namespace FSoft.BlazorLib
         private ElementReference inputElement;
         private ElementReference textWidthElement;
 
+        [Inject]
+        public SharedJsInterop JSInterop { get; set; }
+
         [Parameter]
         public string Id { get; set; }
 
@@ -24,9 +26,14 @@ namespace FSoft.BlazorLib
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
 
+        public InputTagger()
+        {
+            Id = "";
+            Value = "";
+        }
         private async Task OnValueChange(ChangeEventArgs e)
         {
-            Value = e.Value.ToString();
+            Value = e.Value?.ToString() ?? string.Empty;
             await ValueChanged.InvokeAsync(Value);
         }
 
@@ -51,7 +58,7 @@ namespace FSoft.BlazorLib
             {
                 if (TagInputText.Length == 0 && _tags.Count > 0)
                 {
-                    RemoveTag(_tags.Count - 1);
+                    await RemoveTag(_tags.Count - 1);
                 }
             }
         }
@@ -64,7 +71,7 @@ namespace FSoft.BlazorLib
 
         private async Task FocusInput()
         {
-            await JS.InvokeVoidAsync("BlazorFocusElement", inputElement);
+            await JSInterop.FocusInput(inputElement);
         }
 
         private async Task OnInputDetected(ChangeEventArgs e)
@@ -77,11 +84,11 @@ namespace FSoft.BlazorLib
         {
             if (FirstMinWidth)
             {
-                MinWidth = await JS.InvokeAsync<double>("BlazorMeasureTextWidth", Placeholder, textWidthElement);
+                MinWidth = await JSInterop.MeasureTextWidth(Placeholder, textWidthElement);
                 FirstMinWidth = false;
             }
-            var width = await JS.InvokeAsync<double>("BlazorMeasureTextWidth", TagInputText, textWidthElement);
-            await JS.InvokeVoidAsync("BlazorSetElementWidth", inputElement, (MinWidth > width ? MinWidth : width) + 10);
+            var width = await JSInterop.MeasureTextWidth(TagInputText, textWidthElement);
+            await JSInterop.SetElementWidth(inputElement, (MinWidth > width ? MinWidth : width) + 10);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
